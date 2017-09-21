@@ -1,0 +1,21 @@
+<div class="container">
+  <h3>Spring Boot Admin Screen to Start/Stop an Application</h3>
+  <p>
+    This is an administration GUI for Spring-Boot Admin Screen to Start/Stop an Application.
+  </p>
+  <p>
+    All applications have to register themselves at this application. This is done by including <a href="http://codecentric.github.io/spring-boot-admin/@project.version@/#register-clients-via-spring-boot-admin">spring-boot-admin-starter-client</a> or using <a href="http://codecentric.github.io/spring-boot-admin/@project.version@/#discover-clients-via-spring-cloud-discovery">Spring Cloud Discovery</a>.
+  </p>
+
+  <dl>
+    <dt>Version</dt>
+    <dd>@project.version@</dd>
+  </dl>
+  <div class="form-group">
+    <label for="application">Select the Application you want to Start/Stop:</label>
+    <select class="form-control" id="application">
+      <option ng-repeat="SBApp in SBApplications | orderBy" >{{SBApp}}</option>
+    </select>
+    <button type="submit" class="btn btn-success" ng-click="startOrStopApp(startOrStop)" ng-bind="startOrStop"></button>
+  </div>
+</div>

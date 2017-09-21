@@ -48,7 +48,7 @@ module.config(function ($stateProvider) {
     url: '/',
     templateUrl: 'applications/views/applications-list.html',
     controller: 'applicationsCtrl'
-  }).state('applications', {
+  }).state('  applications', {
     abstract: true,
     url: '/applications/:id',
     controller: 'applicationsHeaderCtrl',
