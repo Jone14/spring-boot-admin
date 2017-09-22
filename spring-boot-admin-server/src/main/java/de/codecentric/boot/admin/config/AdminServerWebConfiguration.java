@@ -18,6 +18,7 @@ package de.codecentric.boot.admin.config;
 import java.util.List;
 import java.util.Map;
 
+import de.codecentric.boot.admin.registry.ApplicationManagement;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.context.ApplicationContext;

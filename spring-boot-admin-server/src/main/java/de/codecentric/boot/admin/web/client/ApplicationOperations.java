@@ -32,7 +32,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 /**
- * Handles all rest operations invoked on a registered application.
+ * Handles all web operations invoked on a registered application.
  *
  * @author Johannes Edmeier
  */

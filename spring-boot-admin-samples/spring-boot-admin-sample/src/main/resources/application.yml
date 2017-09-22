@@ -18,7 +18,7 @@ spring:
       url: http://localhost:8080
   profiles:
     active:
-      - secure
+      - insecure
 
 ---
 spring:

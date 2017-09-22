@@ -26,7 +26,7 @@ public class AdminProperties {
 	private String[] url;
 
 	/**
-	 * The admin rest-apis path.
+	 * The admin web-apis path.
 	 */
 	private String apiPath = "api/applications";
 
