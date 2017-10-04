@@ -15,14 +15,11 @@
  */
 package de.codecentric.boot.admin.registry.web;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import java.io.UnsupportedEncodingException;
-
+import com.jayway.jsonpath.JsonPath;
+import de.codecentric.boot.admin.registry.ApplicationManagement;
+import de.codecentric.boot.admin.registry.ApplicationRegistry;
+import de.codecentric.boot.admin.registry.HashingApplicationUrlIdGenerator;
+import de.codecentric.boot.admin.registry.store.SimpleApplicationStore;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Before;
@@ -34,11 +31,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import com.jayway.jsonpath.JsonPath;
+import java.io.UnsupportedEncodingException;
 
-import de.codecentric.boot.admin.registry.ApplicationRegistry;
-import de.codecentric.boot.admin.registry.HashingApplicationUrlIdGenerator;
-import de.codecentric.boot.admin.registry.store.SimpleApplicationStore;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class RegistryControllerTest {
 
@@ -62,8 +59,9 @@ public class RegistryControllerTest {
 	public void setup() {
 		ApplicationRegistry registry = new ApplicationRegistry(new SimpleApplicationStore(),
 				new HashingApplicationUrlIdGenerator());
+		ApplicationManagement appManagement = new ApplicationManagement("", "", "");
 		registry.setApplicationEventPublisher(Mockito.mock(ApplicationEventPublisher.class));
-		mvc = MockMvcBuilders.standaloneSetup(new RegistryController(registry)).build();
+		mvc = MockMvcBuilders.standaloneSetup(new RegistryController(registry, appManagement)).build();
 	}
 
 	@Test

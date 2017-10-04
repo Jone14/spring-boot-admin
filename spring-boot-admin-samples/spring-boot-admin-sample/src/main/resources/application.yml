@@ -10,6 +10,10 @@ logging:
 management:
   context-path: "/actuator"
 
+javaLocation: "C:\\Program Files\\Java\\jre1.8.0_121\\bin"
+applicationJarLocation: "D:\\data-fabric-jars"
+applicationConfigLocation: ""
+
 spring:
   application:
     name: "@pom.artifactId@"
@@ -18,7 +22,7 @@ spring:
       url: http://localhost:8080
   profiles:
     active:
-      - insecure
+      - secure
 
 ---
 spring:
@@ -46,7 +50,7 @@ spring:
 
 security:
   user:
-    name: user
-    password: pass
+    name: jone
+    password: password
 
 

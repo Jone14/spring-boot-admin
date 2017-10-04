@@ -18,17 +18,12 @@ package de.codecentric.boot.admin.config;
 import de.codecentric.boot.admin.journal.ApplicationEventJournal;
 import de.codecentric.boot.admin.journal.store.JournaledEventStore;
 import de.codecentric.boot.admin.journal.store.SimpleJournaledEventStore;
-import de.codecentric.boot.admin.registry.ApplicationIdGenerator;
-import de.codecentric.boot.admin.registry.ApplicationRegistry;
-import de.codecentric.boot.admin.registry.HashingApplicationUrlIdGenerator;
-import de.codecentric.boot.admin.registry.StatusUpdateApplicationListener;
-import de.codecentric.boot.admin.registry.StatusUpdater;
+import de.codecentric.boot.admin.registry.*;
 import de.codecentric.boot.admin.registry.store.ApplicationStore;
 import de.codecentric.boot.admin.registry.store.SimpleApplicationStore;
 import de.codecentric.boot.admin.web.client.ApplicationOperations;
 import de.codecentric.boot.admin.web.client.BasicAuthHttpHeaderProvider;
 import de.codecentric.boot.admin.web.client.HttpHeadersProvider;
-
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -127,6 +122,12 @@ public class AdminServerCoreConfiguration {
     @ConditionalOnMissingBean
     public ApplicationStore applicationStore() {
         return new SimpleApplicationStore();
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public ApplicationManagement appManagement() {
+        return new ApplicationManagement("", "", "");
     }
 
 }

@@ -15,10 +15,20 @@
  */
 package de.codecentric.boot.admin.config;
 
-import java.util.List;
-import java.util.Map;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
+import de.codecentric.boot.admin.event.ClientApplicationDeregisteredEvent;
+import de.codecentric.boot.admin.event.ClientApplicationRegisteredEvent;
+import de.codecentric.boot.admin.event.RoutesOutdatedEvent;
+import de.codecentric.boot.admin.journal.ApplicationEventJournal;
+import de.codecentric.boot.admin.journal.web.JournalController;
 import de.codecentric.boot.admin.registry.ApplicationManagement;
+import de.codecentric.boot.admin.registry.ApplicationRegistry;
+import de.codecentric.boot.admin.registry.web.RegistryController;
+import de.codecentric.boot.admin.web.AdminController;
+import de.codecentric.boot.admin.web.PrefixHandlerMapping;
+import de.codecentric.boot.admin.web.servlet.resource.ConcatenatingResourceResolver;
+import de.codecentric.boot.admin.web.servlet.resource.PreferMinifiedFilteringResourceResolver;
+import de.codecentric.boot.admin.web.servlet.resource.ResourcePatternResolvingResourceResolver;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.context.ApplicationContext;
@@ -36,20 +46,8 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import de.codecentric.boot.admin.event.ClientApplicationDeregisteredEvent;
-import de.codecentric.boot.admin.event.ClientApplicationRegisteredEvent;
-import de.codecentric.boot.admin.event.RoutesOutdatedEvent;
-import de.codecentric.boot.admin.journal.ApplicationEventJournal;
-import de.codecentric.boot.admin.journal.web.JournalController;
-import de.codecentric.boot.admin.registry.ApplicationRegistry;
-import de.codecentric.boot.admin.registry.web.RegistryController;
-import de.codecentric.boot.admin.web.AdminController;
-import de.codecentric.boot.admin.web.PrefixHandlerMapping;
-import de.codecentric.boot.admin.web.servlet.resource.ConcatenatingResourceResolver;
-import de.codecentric.boot.admin.web.servlet.resource.PreferMinifiedFilteringResourceResolver;
-import de.codecentric.boot.admin.web.servlet.resource.ResourcePatternResolvingResourceResolver;
+import java.util.List;
+import java.util.Map;
 
 @Configuration
 public class AdminServerWebConfiguration extends WebMvcConfigurerAdapter
@@ -135,8 +133,8 @@ public class AdminServerWebConfiguration extends WebMvcConfigurerAdapter
 
 	@Bean
 	@ConditionalOnMissingBean
-	public RegistryController registryController(ApplicationRegistry applicationRegistry) {
-		return new RegistryController(applicationRegistry);
+	public RegistryController registryController(ApplicationRegistry applicationRegistry, ApplicationManagement appManagement) {
+		return new RegistryController(applicationRegistry, appManagement);
 	}
 
 	@Bean

@@ -1,20 +1,17 @@
 package de.codecentric.boot.admin.registry.web;
 
 import de.codecentric.boot.admin.model.Application;
+import de.codecentric.boot.admin.registry.ApplicationManagement;
 import de.codecentric.boot.admin.registry.ApplicationRegistry;
 import de.codecentric.boot.admin.web.AdminController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 /*
  * Copyright 2014 the original author or authors.
@@ -44,10 +41,11 @@ public class RegistryController {
 
     private final ApplicationRegistry registry;
 
+    private final ApplicationManagement appManagement;
 
-
-    public RegistryController(ApplicationRegistry registry) {
+    public RegistryController(ApplicationRegistry registry, ApplicationManagement appManagement) {
         this.registry = registry;
+        this.appManagement = appManagement;
     }
 
     /**
@@ -115,6 +113,42 @@ public class RegistryController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    @RequestMapping(value = "startApplication", method = RequestMethod.GET)
+    public String startApplication() throws Exception {
+        try {
+            LOGGER.debug("Starting Spring Boot Application");
+            appManagement.manageApplication("start");
+        } catch (Exception exception) {
+            LOGGER.error("Exception occured while starting Spring Boot Application", exception.getStackTrace());
+        }
+        return "Application Started";
+    }
+
+    @RequestMapping(value = "stopApplication", method = RequestMethod.GET)
+    public String stopApplication() throws Exception {
+        try {
+            LOGGER.debug("Stopping Spring Boot Application");
+            appManagement.manageApplication("stop");
+        } catch (Exception exception) {
+            LOGGER.error("Exception occured while stopping Spring Boot Application", exception.getStackTrace());
+        }
+        return "Application Stopped";
+    }
+
+    @RequestMapping(value = "getApplication", method = RequestMethod.GET)
+    public ArrayList getApplication() throws Exception {
+        ArrayList response = new ArrayList();
+        try {
+            LOGGER.debug("Getting list of Spring Boot Application");
+            response = appManagement.getApplication();
+        } catch (Exception exception) {
+            LOGGER.error("Exception occured while Getting list of Spring Boot Application", exception.getStackTrace());
+        }
+        return response;
+    }
+
+
 
 
 }
