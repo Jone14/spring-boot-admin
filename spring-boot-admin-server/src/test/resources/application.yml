@@ -5,6 +5,12 @@ spring:
         name: spring-boot-admin-server-test
 info:
     version: 1.0.0
+
+application:
+  management:
+    javaLocation: /opt/tibco/jdk1.7.0_45/bin
+    jarLocation: /usr/test/
+    configLocation: /usr/test/test/application.properties
 ---
 spring:
     profiles: default

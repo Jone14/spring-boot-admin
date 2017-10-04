@@ -16,16 +16,14 @@ import java.util.ArrayList;
 public class ApplicationManagement{
     private static final Logger LOGGER = LoggerFactory.getLogger(ApplicationManagement.class);
 
-    private final String javaLocation;
+   private final String javaLocation;
 
     private final String appLocation;
 
     private final String appConfigLocation;
 
     @Autowired
-    public ApplicationManagement(@Value("${javaLocation}") String javaLocation,
-                                 @Value("${applicationJarLocation}") String appLocation,
-                                 @Value("${applicationConfigLocation}") String appConfigLocation) {
+    public ApplicationManagement(String javaLocation, String appLocation, String appConfigLocation) {
         this.javaLocation = javaLocation;
         this.appLocation = appLocation;
         this.appConfigLocation = appConfigLocation;

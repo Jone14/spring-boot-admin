@@ -36,12 +36,14 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.web.client.DefaultResponseErrorHandler;
 
 @Configuration
-@EnableConfigurationProperties(AdminServerProperties.class)
+@EnableConfigurationProperties({AdminServerProperties.class,AppManagementProperties.class})
 public class AdminServerCoreConfiguration {
     private final AdminServerProperties adminServerProperties;
+    private final AppManagementProperties appManagementProperties;
 
-    public AdminServerCoreConfiguration(AdminServerProperties adminServerProperties) {
+    public AdminServerCoreConfiguration(AdminServerProperties adminServerProperties,AppManagementProperties appManagementProperties) {
         this.adminServerProperties = adminServerProperties;
+        this.appManagementProperties = appManagementProperties;
     }
 
     @Bean
@@ -68,14 +70,14 @@ public class AdminServerCoreConfiguration {
     public ApplicationOperations applicationOperations(RestTemplateBuilder restTemplBuilder,
                                                        HttpHeadersProvider headersProvider) {
         RestTemplateBuilder builder = restTemplBuilder.messageConverters(new MappingJackson2HttpMessageConverter())
-                                                      .errorHandler(new DefaultResponseErrorHandler() {
-                                                          @Override
-                                                          protected boolean hasError(HttpStatus statusCode) {
-                                                              return false;
-                                                          }
-                                                      });
+                .errorHandler(new DefaultResponseErrorHandler() {
+                    @Override
+                    protected boolean hasError(HttpStatus statusCode) {
+                        return false;
+                    }
+                });
         builder = builder.setConnectTimeout(adminServerProperties.getMonitor().getConnectTimeout())
-                         .setReadTimeout(adminServerProperties.getMonitor().getReadTimeout());
+                .setReadTimeout(adminServerProperties.getMonitor().getReadTimeout());
         return new ApplicationOperations(builder.build(), headersProvider);
     }
 
@@ -127,7 +129,7 @@ public class AdminServerCoreConfiguration {
     @Bean
     @ConditionalOnMissingBean
     public ApplicationManagement appManagement() {
-        return new ApplicationManagement("", "", "");
+        return new ApplicationManagement(appManagementProperties.getJavaLocation(), appManagementProperties.getJarLocation(), appManagementProperties.getConfigLocation());
     }
 
 }
