@@ -10,9 +10,12 @@ logging:
 management:
   context-path: "/actuator"
 
-javaLocation: "C:\\Program Files\\Java\\jre1.8.0_121\\bin"
-applicationJarLocation: "D:\\data-fabric-jars"
-applicationConfigLocation: ""
+application:
+  management:
+      javaLocation: "C:\\Program Files\\Java\\jre1.8.0_121\\bin"
+      jarLocation: "D:\\data-fabric-jars"
+      configLocation: ""
+      pidLocation: "D:\\spring-boot-pid"
 
 spring:
   application:
@@ -22,7 +25,7 @@ spring:
       url: http://localhost:8080
   profiles:
     active:
-      - secure
+      - insecure
 
 ---
 spring:

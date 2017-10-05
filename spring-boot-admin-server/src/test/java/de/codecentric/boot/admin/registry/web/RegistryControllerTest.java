@@ -59,7 +59,7 @@ public class RegistryControllerTest {
 	public void setup() {
 		ApplicationRegistry registry = new ApplicationRegistry(new SimpleApplicationStore(),
 				new HashingApplicationUrlIdGenerator());
-		ApplicationManagement appManagement = new ApplicationManagement("", "", "");
+		ApplicationManagement appManagement = new ApplicationManagement("", "", "", "");
 		registry.setApplicationEventPublisher(Mockito.mock(ApplicationEventPublisher.class));
 		mvc = MockMvcBuilders.standaloneSetup(new RegistryController(registry, appManagement)).build();
 	}

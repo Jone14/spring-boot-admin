@@ -30,14 +30,15 @@ module.exports = function ($rootScope, $scope, $http) {
 
 
     $scope.getApplication = function(){
-        $http.get('/api/applications').then(function (response) {
+        //http://localhost:8080/api/applications/getApplication
+        $http.get('/api/applications/getApplication').then(function (response) {
             //alert(response.data);
             $scope.SBApplications=response.data;
-            if(response.data[0].statusInfo.status=="UP"){
+            /*if(response.data[0].statusInfo.status=="UP"){
                 $scope.startOrStop='stop';
             }else{
                 $scope.startOrStop='start';
-            }
+            }*/
         }).catch(function (response) {
             $scope.error = response.data;
         });

@@ -129,7 +129,7 @@ public class AdminServerCoreConfiguration {
     @Bean
     @ConditionalOnMissingBean
     public ApplicationManagement appManagement() {
-        return new ApplicationManagement(appManagementProperties.getJavaLocation(), appManagementProperties.getJarLocation(), appManagementProperties.getConfigLocation());
+        return new ApplicationManagement(appManagementProperties.getJavaLocation(), appManagementProperties.getJarLocation(), appManagementProperties.getConfigLocation(), appManagementProperties.getPidLocation());
     }
 
 }

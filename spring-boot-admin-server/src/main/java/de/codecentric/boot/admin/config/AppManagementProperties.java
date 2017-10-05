@@ -4,12 +4,21 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @ConfigurationProperties(prefix ="application.management")
 public class AppManagementProperties {
-    private String javaLocation = "";
-    private String jarLocation = "";
-    private String configLocation = "";
+    private String javaLocation;
+    private String jarLocation;
+    private String configLocation;
+    private String pidLocation;
+
+    public String getPidLocation() {
+        return pidLocation;
+    }
+
+    public void setPidLocation(String pidLocation) {
+        this.pidLocation = pidLocation;
+    }
 
     public void setJavaLocation(String javaLocation){
-        this.jarLocation = javaLocation;
+        this.javaLocation = javaLocation;
     }
 
     public String getJavaLocation() {

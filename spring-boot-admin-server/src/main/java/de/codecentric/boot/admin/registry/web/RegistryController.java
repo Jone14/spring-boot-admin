@@ -3,6 +3,7 @@ package de.codecentric.boot.admin.registry.web;
 import de.codecentric.boot.admin.model.Application;
 import de.codecentric.boot.admin.registry.ApplicationManagement;
 import de.codecentric.boot.admin.registry.ApplicationRegistry;
+import de.codecentric.boot.admin.registry.bean.AppManagementBean;
 import de.codecentric.boot.admin.web.AdminController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 /*
  * Copyright 2014 the original author or authors.
@@ -137,11 +139,11 @@ public class RegistryController {
     }
 
     @RequestMapping(value = "getApplication", method = RequestMethod.GET)
-    public ArrayList getApplication() throws Exception {
-        ArrayList response = new ArrayList();
+    public List<AppManagementBean> getApplication() throws Exception {
+        List<AppManagementBean> response = new ArrayList<AppManagementBean>();
         try {
             LOGGER.debug("Getting list of Spring Boot Application");
-            response = appManagement.getApplication();
+            response = appManagement.getAllApplication();
         } catch (Exception exception) {
             LOGGER.error("Exception occured while Getting list of Spring Boot Application", exception.getStackTrace());
         }
