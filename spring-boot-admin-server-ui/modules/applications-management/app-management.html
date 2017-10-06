@@ -12,9 +12,9 @@
         <dd>@project.version@</dd>
     </dl>
     <div class="form-group" ng-repeat="SBApp in SBApplications">
-        <P>{{SBApp.name}}</P>
-        <P>{{SBApp.pid}}</P>
-        <P>{{SBApp.status}}</P>
+        <P style="width: 25%;float: left;">{{SBApp.name}}</P>
+        <P style="width: 25%;float: left;">{{SBApp.pid}}</P>
+        <P style="width: 25%;float: left;">{{SBApp.status}}</P>
        <!-- <label for="application">Select the Application you want to Start/Stop:</label>
         <select class="form-control" id="application" ng-model="itemSelected" ng-change="onCategoryChange(itemSelected)">
             <option ng-repeat="SBApp in SBApplications | orderBy">{{SBApp.name}}</option>

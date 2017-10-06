@@ -29,12 +29,20 @@ public class ApplicationManagement {
 
     private final String pidLocation;
 
+    private final String hostName = "";
+
+    private final String hostUsername;
+
+    private final String hostPassword;
+
     @Autowired
-    public ApplicationManagement(String javaLocation, String appLocation, String appConfigLocation, String pidLocation) {
+    public ApplicationManagement(String javaLocation, String appLocation, String appConfigLocation, String pidLocation, String hostUsername, String hostPassword) {
         this.javaLocation = javaLocation;
         this.appLocation = appLocation;
         this.appConfigLocation = appConfigLocation;
         this.pidLocation = pidLocation;
+        this.hostUsername = hostUsername;
+        this.hostPassword = hostPassword;
     }
 
     public String buildCommandToStartApplication() {

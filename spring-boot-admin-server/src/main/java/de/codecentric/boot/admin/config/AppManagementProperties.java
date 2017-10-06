@@ -9,6 +9,25 @@ public class AppManagementProperties {
     private String configLocation;
     private String pidLocation;
 
+    private String hostUsername;
+    private String hostPassword;
+
+    public String getHostUsername() {
+        return hostUsername;
+    }
+
+    public void setHostUsername(String hostUsername) {
+        this.hostUsername = hostUsername;
+    }
+
+    public String getHostPassword() {
+        return hostPassword;
+    }
+
+    public void setHostPassword(String hostPassword) {
+        this.hostPassword = hostPassword;
+    }
+
     public String getPidLocation() {
         return pidLocation;
     }
