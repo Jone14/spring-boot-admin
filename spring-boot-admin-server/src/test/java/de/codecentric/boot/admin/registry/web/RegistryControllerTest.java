@@ -16,7 +16,7 @@
 package de.codecentric.boot.admin.registry.web;
 
 import com.jayway.jsonpath.JsonPath;
-import de.codecentric.boot.admin.registry.ApplicationManagement;
+import de.codecentric.boot.admin.management.ApplicationManagement;
 import de.codecentric.boot.admin.registry.ApplicationRegistry;
 import de.codecentric.boot.admin.registry.HashingApplicationUrlIdGenerator;
 import de.codecentric.boot.admin.registry.store.SimpleApplicationStore;

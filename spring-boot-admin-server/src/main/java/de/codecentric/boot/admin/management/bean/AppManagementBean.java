@@ -1,4 +1,4 @@
-package de.codecentric.boot.admin.registry.bean;
+package de.codecentric.boot.admin.management.bean;
 
 public class AppManagementBean {
     private String name;
@@ -7,9 +7,19 @@ public class AppManagementBean {
 
     private String status;
 
+    private String hostUrl;
+
     private String hostUsername;
 
     private String hostPassword;
+
+    public String getHostUrl() {
+        return hostUrl;
+    }
+
+    public void setHostUrl(String hostUrl) {
+        this.hostUrl = hostUrl;
+    }
 
     public String getHostUsername() {
         return hostUsername;

@@ -87,6 +87,18 @@
             <artifactId>json-path</artifactId>
             <scope>test</scope>
         </dependency>
+        <!-- Dependency for Java Secure CHannel-->
+        <dependency>
+            <groupId>com.jcraft</groupId>
+            <artifactId>jsch</artifactId>
+            <version>0.1.54</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/com.github.cverges.expect4j/expect4j -->
+        <dependency>
+            <groupId>com.github.cverges.expect4j</groupId>
+            <artifactId>expect4j</artifactId>
+            <version>1.6</version>
+        </dependency>
     </dependencies>
     <build>
         <finalName>${project.artifactId}</finalName>

@@ -18,6 +18,7 @@ package de.codecentric.boot.admin.config;
 import de.codecentric.boot.admin.journal.ApplicationEventJournal;
 import de.codecentric.boot.admin.journal.store.JournaledEventStore;
 import de.codecentric.boot.admin.journal.store.SimpleJournaledEventStore;
+import de.codecentric.boot.admin.management.ApplicationManagement;
 import de.codecentric.boot.admin.registry.*;
 import de.codecentric.boot.admin.registry.store.ApplicationStore;
 import de.codecentric.boot.admin.registry.store.SimpleApplicationStore;

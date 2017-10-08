@@ -1,18 +1,17 @@
-package de.codecentric.boot.admin.registry;
+package de.codecentric.boot.admin.management;
 
 
 import com.google.common.io.Files;
 import de.codecentric.boot.admin.config.OsCheck;
-import de.codecentric.boot.admin.registry.bean.AppManagementBean;
+import de.codecentric.boot.admin.registry.ApplicationRegistry;
+import de.codecentric.boot.admin.management.bean.AppManagementBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,11 +28,17 @@ public class ApplicationManagement {
 
     private final String pidLocation;
 
-    private final String hostName = "";
+    private String hostName = "";
 
     private final String hostUsername;
 
     private final String hostPassword;
+
+    @Autowired
+    ApplicationRegistry applicationRegistry;
+
+    @Autowired
+    AppManagementUtil util;
 
     @Autowired
     public ApplicationManagement(String javaLocation, String appLocation, String appConfigLocation, String pidLocation, String hostUsername, String hostPassword) {
@@ -70,8 +75,8 @@ public class ApplicationManagement {
                     command = buildCommandToStopApplication();
                 }
                 LOGGER.debug("Executed command is" + command);
-                String output = executeCommand(command);
-                LOGGER.debug("Linux Command Executed" + output);
+                //String output = util.executeCommand(command);
+                //LOGGER.debug("Linux Command Executed" + output);
 
                 break;
             case Other:
@@ -79,92 +84,65 @@ public class ApplicationManagement {
         }
     }
 
-    private String executeCommand(String command) {
 
-        StringBuffer output = new StringBuffer();
 
-        Process p;
-        try {
-            p = Runtime.getRuntime().exec(command);
-            p.waitFor();
-            BufferedReader reader =
-                    new BufferedReader(new InputStreamReader(p.getInputStream()));
 
-            String line = "";
-            while ((line = reader.readLine()) != null) {
-                output.append(line + "\n");
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return output.toString();
-
-    }
-
-    public ArrayList getFileNameListWithoutExtn(String folderLocation) {
-        ArrayList fileArrayList = new ArrayList();
-        String fileName;
-        File folder = new File(folderLocation);
-        File[] listOfFiles = folder.listFiles();
-        LOGGER.debug("The Path::" + appLocation + "has" + listOfFiles.length + "Files");
-        for (int i = 0; i < listOfFiles.length; i++) {
-            if (listOfFiles[i].isFile()) {
-                fileName = listOfFiles[i].getName();
-                System.out.println("File " + fileName);
-                fileArrayList.add(Files.getNameWithoutExtension(fileName));
-            }
-        }
-        return fileArrayList;
-    }
 
     public List<AppManagementBean> getAllApplication() {
         List<AppManagementBean> appManagementBeanList = new ArrayList<AppManagementBean>();
-        AppManagementBean appManagementBean = new AppManagementBean();
+
         ArrayList<String> AppFileArrayList = new ArrayList();
         ArrayList<String> PidFileArrayList = new ArrayList();
         String pidContent;
-        AppFileArrayList = getFileNameListWithoutExtn(appLocation);
-        PidFileArrayList = getFileNameListWithoutExtn(pidLocation);
+        AppFileArrayList = util.getFileNameListWithoutExtn(appLocation);
+        PidFileArrayList = util.getFileNameListWithoutExtn(pidLocation);
 
         for (String appfile : AppFileArrayList) {
+
+            AppManagementBean appManagementBean = new AppManagementBean();
+
             for (String pidfile : PidFileArrayList) {
-                if (appfile.equalsIgnoreCase(pidfile))
                     try {
-                        pidContent = Files.readFirstLine(new File(pidLocation + "/" + pidfile + ".pid"), StandardCharsets.UTF_8);
                         appManagementBean.setName(appfile);
-                        appManagementBean.setPid(pidContent);
-                        appManagementBean.setStatus(getStatusOfPid(pidContent));
-                        break;
+                        if(applicationRegistry.getApplicationsByName(appfile).iterator().hasNext()) {
+                            hostName = applicationRegistry.getApplicationsByName(appfile).iterator().next().getManagementUrl();
+                            appManagementBean.setHostUrl(hostName);
+                            //save the host details in DB/Memory
+                            //byte[] strToBytes = (appfile+"|"+hostName).get();
+                            Files.write((appfile + "|" + hostName).getBytes(), new File("registered-apps.txt"));
+                        }else{
+                            //appManagementBean.setHostUrl("NA");
+                            //get the host details from DB/Memory
+                            List<String> registeredAppList = Files.readLines(new File("registered-apps.txt"), StandardCharsets.UTF_8);
+
+                            for (String registeredApp:registeredAppList) {
+                                String[] data = registeredApp.split("\\|");
+                                if(appfile.equalsIgnoreCase(data[0])){
+                                    appManagementBean.setHostUrl(data[1]);
+                                }
+                            }
+                        }
+
+                        if (appfile.equalsIgnoreCase(pidfile)) {
+                            pidContent = Files.readFirstLine(new File(pidLocation + "/" + pidfile + ".pid"), StandardCharsets.UTF_8);
+                            appManagementBean.setPid(pidContent);
+                            appManagementBean.setStatus(util.getStatusOfPid(pidContent));
+                            break;
+                        }else{
+                            appManagementBean.setPid("NA");
+                            appManagementBean.setStatus("FAILURE");
+                        }
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
             }
+            appManagementBean.setHostUsername(hostUsername);
+            appManagementBean.setHostPassword(hostPassword);
             appManagementBeanList.add(appManagementBean);
         }
         return appManagementBeanList;
 
     }
 
-    public String getStatusOfPid(String pid) {
-        OsCheck.OSType ostype = OsCheck.getOperatingSystemType();
-        String output = "";
-        switch (ostype) {
-            case Windows:
-                break;
-            case MacOS:
-                break;
-            case Linux:
-                String command = "ps -ef | grep " + pid;
-                LOGGER.debug("Executed command is" + command);
-                output = executeCommand(command);
-                LOGGER.debug("Linux Command Executed" + output);
 
-                break;
-            case Other:
-                break;
-        }
-        return output;
-    }
 }

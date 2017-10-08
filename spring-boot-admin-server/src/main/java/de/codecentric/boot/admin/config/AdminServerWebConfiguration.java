@@ -21,7 +21,7 @@ import de.codecentric.boot.admin.event.ClientApplicationRegisteredEvent;
 import de.codecentric.boot.admin.event.RoutesOutdatedEvent;
 import de.codecentric.boot.admin.journal.ApplicationEventJournal;
 import de.codecentric.boot.admin.journal.web.JournalController;
-import de.codecentric.boot.admin.registry.ApplicationManagement;
+import de.codecentric.boot.admin.management.ApplicationManagement;
 import de.codecentric.boot.admin.registry.ApplicationRegistry;
 import de.codecentric.boot.admin.registry.web.RegistryController;
 import de.codecentric.boot.admin.web.AdminController;

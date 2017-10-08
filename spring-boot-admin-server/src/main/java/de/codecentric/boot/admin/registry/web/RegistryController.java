@@ -1,9 +1,9 @@
 package de.codecentric.boot.admin.registry.web;
 
 import de.codecentric.boot.admin.model.Application;
-import de.codecentric.boot.admin.registry.ApplicationManagement;
+import de.codecentric.boot.admin.management.ApplicationManagement;
 import de.codecentric.boot.admin.registry.ApplicationRegistry;
-import de.codecentric.boot.admin.registry.bean.AppManagementBean;
+import de.codecentric.boot.admin.management.bean.AppManagementBean;
 import de.codecentric.boot.admin.web.AdminController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -12,10 +12,13 @@ management:
 
 application:
   management:
-      javaLocation: "C:\\Program Files\\Java\\jre1.8.0_121\\bin"
-      jarLocation: "D:\\data-fabric-jars"
+      javaLocation: "/usr/bin"
+      jarLocation: "/home/pbarega/spring-boot-admin/data-fabric-jars"
       configLocation: ""
-      pidLocation: "D:\\spring-boot-pid"
+      pidLocation: "/home/pbarega/spring-boot-admin/spring-boot-pid"
+      hostUsername: "pbarega"
+      host-password: "Ready2go8"
+
 
 spring:
   application:
@@ -25,7 +28,7 @@ spring:
       url: http://localhost:8080
   profiles:
     active:
-      - insecure
+      - secure
 
 ---
 spring:
