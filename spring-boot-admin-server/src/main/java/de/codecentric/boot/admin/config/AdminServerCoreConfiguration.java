@@ -18,6 +18,7 @@ package de.codecentric.boot.admin.config;
 import de.codecentric.boot.admin.journal.ApplicationEventJournal;
 import de.codecentric.boot.admin.journal.store.JournaledEventStore;
 import de.codecentric.boot.admin.journal.store.SimpleJournaledEventStore;
+import de.codecentric.boot.admin.management.AppManagementUtil;
 import de.codecentric.boot.admin.management.ApplicationManagement;
 import de.codecentric.boot.admin.registry.*;
 import de.codecentric.boot.admin.registry.store.ApplicationStore;
@@ -37,12 +38,12 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.web.client.DefaultResponseErrorHandler;
 
 @Configuration
-@EnableConfigurationProperties({AdminServerProperties.class,AppManagementProperties.class})
+@EnableConfigurationProperties({AdminServerProperties.class, AppManagementProperties.class})
 public class AdminServerCoreConfiguration {
     private final AdminServerProperties adminServerProperties;
     private final AppManagementProperties appManagementProperties;
 
-    public AdminServerCoreConfiguration(AdminServerProperties adminServerProperties,AppManagementProperties appManagementProperties) {
+    public AdminServerCoreConfiguration(AdminServerProperties adminServerProperties, AppManagementProperties appManagementProperties) {
         this.adminServerProperties = adminServerProperties;
         this.appManagementProperties = appManagementProperties;
     }
@@ -77,8 +78,8 @@ public class AdminServerCoreConfiguration {
                         return false;
                     }
                 });
-        builder = builder.setConnectTimeout(adminServerProperties.getMonitor().getConnectTimeout())
-                .setReadTimeout(adminServerProperties.getMonitor().getReadTimeout());
+        builder = builder.setConnectTimeout(this.adminServerProperties.getMonitor().getConnectTimeout())
+                .setReadTimeout(this.adminServerProperties.getMonitor().getReadTimeout());
         return new ApplicationOperations(builder.build(), headersProvider);
     }
 
@@ -86,7 +87,7 @@ public class AdminServerCoreConfiguration {
     @ConditionalOnMissingBean
     public StatusUpdater statusUpdater(ApplicationStore applicationStore, ApplicationOperations applicationOperations) {
         StatusUpdater statusUpdater = new StatusUpdater(applicationStore, applicationOperations);
-        statusUpdater.setStatusLifetime(adminServerProperties.getMonitor().getStatusLifetime());
+        statusUpdater.setStatusLifetime(this.adminServerProperties.getMonitor().getStatusLifetime());
         return statusUpdater;
     }
 
@@ -105,7 +106,7 @@ public class AdminServerCoreConfiguration {
     public StatusUpdateApplicationListener statusUpdateApplicationListener(StatusUpdater statusUpdater,
                                                                            @Qualifier("updateTaskScheduler") ThreadPoolTaskScheduler taskScheduler) {
         StatusUpdateApplicationListener listener = new StatusUpdateApplicationListener(statusUpdater, taskScheduler);
-        listener.setUpdatePeriod(adminServerProperties.getMonitor().getPeriod());
+        listener.setUpdatePeriod(this.adminServerProperties.getMonitor().getPeriod());
         return listener;
     }
 
@@ -130,7 +131,13 @@ public class AdminServerCoreConfiguration {
     @Bean
     @ConditionalOnMissingBean
     public ApplicationManagement appManagement() {
-        return new ApplicationManagement(appManagementProperties.getJavaLocation(), appManagementProperties.getJarLocation(), appManagementProperties.getConfigLocation(), appManagementProperties.getPidLocation(), appManagementProperties.getHostUsername(), appManagementProperties.getHostPassword());
+        return new ApplicationManagement(this.appManagementProperties.getJavaLocation(), this.appManagementProperties.getJarLocation(), this.appManagementProperties.getConfigLocation(), this.appManagementProperties.getPidLocation(), this.appManagementProperties.getHostUsername(), this.appManagementProperties.getHostPassword());
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public AppManagementUtil appManagementUtil() {
+        return new AppManagementUtil();
     }
 
 }

@@ -152,14 +152,13 @@ public class SSHClient {
     }
 
     /**
-     * @param args
+     *
      */
     public static void main(String[] args) {
         SSHClient ssh = new SSHClient("ldgrvtibadmr002.ladsys.net", "pbarega", "Ready2go9");
         List<String> cmdsToExecute = new ArrayList<String>();
-        cmdsToExecute.add("ls");
-        cmdsToExecute.add("pwd");
-        cmdsToExecute.add("mkdir testdir");
+        cmdsToExecute.add("cd /home/pbarega/spring-boot-admin/data-fabric-jars");
+        cmdsToExecute.add("ls -ltr");
         String outputLog = ssh.execute(cmdsToExecute);
         System.out.println("!!!!!!!!!!!" + outputLog);
     }

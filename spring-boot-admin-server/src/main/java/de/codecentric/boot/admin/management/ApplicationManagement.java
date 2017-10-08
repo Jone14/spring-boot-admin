@@ -3,8 +3,8 @@ package de.codecentric.boot.admin.management;
 
 import com.google.common.io.Files;
 import de.codecentric.boot.admin.config.OsCheck;
-import de.codecentric.boot.admin.registry.ApplicationRegistry;
 import de.codecentric.boot.admin.management.bean.AppManagementBean;
+import de.codecentric.boot.admin.registry.ApplicationRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +13,8 @@ import org.springframework.stereotype.Component;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,18 +29,13 @@ public class ApplicationManagement {
     private final String appConfigLocation;
 
     private final String pidLocation;
-
-    private String hostName = "";
-
     private final String hostUsername;
-
     private final String hostPassword;
-
     @Autowired
     ApplicationRegistry applicationRegistry;
-
     @Autowired
     AppManagementUtil util;
+    private String hostName = "";
 
     @Autowired
     public ApplicationManagement(String javaLocation, String appLocation, String appConfigLocation, String pidLocation, String hostUsername, String hostPassword) {
@@ -85,10 +82,7 @@ public class ApplicationManagement {
     }
 
 
-
-
-
-    public List<AppManagementBean> getAllApplication() {
+    public List<AppManagementBean> getAllApplication() throws IOException {
         List<AppManagementBean> appManagementBeanList = new ArrayList<AppManagementBean>();
 
         ArrayList<String> AppFileArrayList = new ArrayList();
@@ -98,43 +92,44 @@ public class ApplicationManagement {
         PidFileArrayList = util.getFileNameListWithoutExtn(pidLocation);
 
         for (String appfile : AppFileArrayList) {
-
             AppManagementBean appManagementBean = new AppManagementBean();
-
             for (String pidfile : PidFileArrayList) {
-                    try {
-                        appManagementBean.setName(appfile);
-                        if(applicationRegistry.getApplicationsByName(appfile).iterator().hasNext()) {
-                            hostName = applicationRegistry.getApplicationsByName(appfile).iterator().next().getManagementUrl();
-                            appManagementBean.setHostUrl(hostName);
-                            //save the host details in DB/Memory
-                            //byte[] strToBytes = (appfile+"|"+hostName).get();
-                            Files.write((appfile + "|" + hostName).getBytes(), new File("registered-apps.txt"));
-                        }else{
-                            //appManagementBean.setHostUrl("NA");
-                            //get the host details from DB/Memory
-                            List<String> registeredAppList = Files.readLines(new File("registered-apps.txt"), StandardCharsets.UTF_8);
-
-                            for (String registeredApp:registeredAppList) {
-                                String[] data = registeredApp.split("\\|");
-                                if(appfile.equalsIgnoreCase(data[0])){
-                                    appManagementBean.setHostUrl(data[1]);
-                                }
+                appManagementBean.setName(appfile);
+                if (applicationRegistry.getApplicationsByName(appfile).iterator().hasNext()) {
+                    hostName = applicationRegistry.getApplicationsByName(appfile).iterator().next().getManagementUrl();
+                    //save the host details in DB/Memory
+                    //byte[] strToBytes = (appfile+"|"+hostName).get();
+                    String host = ((hostName).split("\\/|:"))[3];
+                    appManagementBean.setHostUrl(host);
+                    java.nio.file.Files.write(Paths.get("registered-apps.txt"), (appfile + "|" + host).getBytes(), StandardOpenOption.APPEND);
+                } else {
+                    //appManagementBean.setHostUrl("NA");
+                    //get the host details from DB/Memory
+                    List<String> registeredAppList = null;
+                    registeredAppList = java.nio.file.Files.readAllLines(Paths.get("registered-apps.txt"), StandardCharsets.UTF_8);
+                    ArrayList hostUrlList = new ArrayList();
+                    for (String registeredApp : registeredAppList) {
+                        String[] data = registeredApp.split("\\|");
+                        if (appfile.equalsIgnoreCase(data[0])) {
+                            appManagementBean.setHostUrl(data[1]);
+                            //subbu comment
+                            if (!hostUrlList.contains(data[1])) {
+                                hostUrlList.add(data[1]);
                             }
                         }
-
-                        if (appfile.equalsIgnoreCase(pidfile)) {
-                            pidContent = Files.readFirstLine(new File(pidLocation + "/" + pidfile + ".pid"), StandardCharsets.UTF_8);
-                            appManagementBean.setPid(pidContent);
-                            appManagementBean.setStatus(util.getStatusOfPid(pidContent));
-                            break;
-                        }else{
-                            appManagementBean.setPid("NA");
-                            appManagementBean.setStatus("FAILURE");
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
                     }
+                }
+
+                if (PidFileArrayList.contains(appfile)) {
+                    File pidFile = new File(pidLocation + "/" + appfile + ".pid");
+                    pidContent = Files.readFirstLine(pidFile, StandardCharsets.UTF_8);
+                    appManagementBean.setPid(pidContent);
+                    appManagementBean.setStatus(util.getStatusOfPid(pidContent));
+                    break;
+                } else {
+                    appManagementBean.setPid("NA");
+                    appManagementBean.setStatus("FAILURE");
+                }
             }
             appManagementBean.setHostUsername(hostUsername);
             appManagementBean.setHostPassword(hostPassword);
@@ -143,6 +138,5 @@ public class ApplicationManagement {
         return appManagementBeanList;
 
     }
-
 
 }

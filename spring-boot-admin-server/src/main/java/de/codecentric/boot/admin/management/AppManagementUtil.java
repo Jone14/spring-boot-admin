@@ -4,10 +4,15 @@ import com.google.common.io.Files;
 import de.codecentric.boot.admin.config.OsCheck;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.List;
 
+@Component
 public class AppManagementUtil {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AppManagementUtil.class);
@@ -34,10 +39,27 @@ public class AppManagementUtil {
     }
 
     public ArrayList getFileNameListWithoutExtn(String folderLocation) {
+
+        List<String> registeredAppList = null;
+        try {
+            registeredAppList = Files.readLines(new File("registered-apps.txt"), StandardCharsets.UTF_8);
+            for (String registeredApp : registeredAppList) {
+                String[] data = registeredApp.split("\\|");
+                SSHConnectionManager.getAppsOverSSH(data[1], "ls " + folderLocation);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         ArrayList fileArrayList = new ArrayList();
         String fileName;
         File folder = new File(folderLocation);
         File[] listOfFiles = folder.listFiles();
+
+        String strName = "name";
+        String[] strArray = new String[]{strName};
+
+
         LOGGER.debug("The Path::" + folderLocation + "has" + listOfFiles.length + "Files");
         for (int i = 0; i < listOfFiles.length; i++) {
             if (listOfFiles[i].isFile()) {
@@ -65,37 +87,12 @@ public class AppManagementUtil {
             } else {
                 output.append("FAILURE");
             }
-            /*BufferedReader reader =
-                    new BufferedReader(new InputStreamReader(p.getInputStream()));
-
-            String line = "";
-            while ((line = reader.readLine()) != null) {
-                output.append(line + "\n");
-            }*/
-
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         return output.toString();
     }
 
-    /*public void test(){
-        JSch jsch = new JSch();
-        Session session = jsch.getSession(username, hostname, port);
-        session.setPassword(password);
-
-        Hashtable<String,String> config = new Hashtable<String,String>();
-        config.put("StrictHostKeyChecking", "no");
-        session.setConfig(config);
-        try {
-            session.connect(60000);
-            ChannelShell channel = (ChannelShell) session.openChannel("shell");
-            Expect4j expect = new Expect4j(channel.getInputStream(), channel.getOutputStream());
-            channel.connect();
-        }catch(Exception E){
-
-        }
-
-    }*/
+    public void getSSHClientDetails() {
+    }
 }

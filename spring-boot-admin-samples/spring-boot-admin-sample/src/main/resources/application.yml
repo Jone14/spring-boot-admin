@@ -17,7 +17,7 @@ application:
       configLocation: ""
       pidLocation: "/home/pbarega/spring-boot-admin/spring-boot-pid"
       hostUsername: "pbarega"
-      host-password: "Ready2go8"
+      host-password: "Ready2go9"
 
 
 spring:
