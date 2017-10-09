@@ -12,7 +12,7 @@ management:
 
 application:
   management:
-      javaLocation: "/usr/bin"
+      javaLocation: "/home/pbarega/jdk1.8.0_144"
       jarLocation: "/home/pbarega/spring-boot-admin/data-fabric-jars"
       configLocation: ""
       pidLocation: "/home/pbarega/spring-boot-admin/spring-boot-pid"

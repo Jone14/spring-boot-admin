@@ -1,9 +1,9 @@
 package de.codecentric.boot.admin.registry.web;
 
-import de.codecentric.boot.admin.model.Application;
 import de.codecentric.boot.admin.management.ApplicationManagement;
-import de.codecentric.boot.admin.registry.ApplicationRegistry;
 import de.codecentric.boot.admin.management.bean.AppManagementBean;
+import de.codecentric.boot.admin.model.Application;
+import de.codecentric.boot.admin.registry.ApplicationRegistry;
 import de.codecentric.boot.admin.web.AdminController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -116,26 +116,19 @@ public class RegistryController {
         }
     }
 
-    @RequestMapping(value = "startApplication", method = RequestMethod.GET)
-    public String startApplication() throws Exception {
-        try {
-            LOGGER.debug("Starting Spring Boot Application");
-            appManagement.manageApplication("start");
-        } catch (Exception exception) {
-            LOGGER.error("Exception occured while starting Spring Boot Application", exception.getStackTrace());
-        }
-        return "Application Started";
+    @RequestMapping(value = "startApplication/{name}/{host}", method = RequestMethod.GET)
+    public String startApplication(@PathVariable String name, @PathVariable String host) throws Exception {
+
+        LOGGER.debug("Starting Spring Boot Application::" + name);
+
+        return appManagement.startApplication(name, host);
     }
 
-    @RequestMapping(value = "stopApplication", method = RequestMethod.GET)
-    public String stopApplication() throws Exception {
-        try {
-            LOGGER.debug("Stopping Spring Boot Application");
-            appManagement.manageApplication("stop");
-        } catch (Exception exception) {
-            LOGGER.error("Exception occured while stopping Spring Boot Application", exception.getStackTrace());
-        }
-        return "Application Stopped";
+    @RequestMapping(value = "stopApplication/{pid}/{host}", method = RequestMethod.GET)
+    public String stopApplication(@PathVariable String pid, @PathVariable String host) throws Exception {
+        
+        LOGGER.debug("Stopping Spring Boot Application with the PID::" + pid);
+        return appManagement.stopApplication(pid, host);
     }
 
     @RequestMapping(value = "getApplication", method = RequestMethod.GET)
@@ -149,8 +142,6 @@ public class RegistryController {
         }
         return response;
     }
-
-
 
 
 }

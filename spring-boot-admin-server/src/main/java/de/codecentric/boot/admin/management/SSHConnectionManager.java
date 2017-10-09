@@ -24,22 +24,70 @@ public class SSHConnectionManager {
         this.password = password;
     }
 
+   /* public static void main(String[] args) {
+
+        SSHConnectionManager ssh = new SSHConnectionManager();
+        try {
+            ssh.open();
+            String ret = ssh.runCommand("ls /home/pbarega/spring-boot-admin/data-fabric-jars");
+
+            System.out.println(ret);
+            String[] ary = ret.split("\n");
+            System.out.println(ary);
+            ssh.close();
+
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }*/
+
+    public static String[] getAppFileNameListWithoutExtn(String host, String url, String hostname, String hostPass) {
+        String command = "find " + url + " -name '*.jar' -printf '%P\\n'";
+
+        return runCommandOverSSH(host, hostname, hostPass, command);
+
+    }
+
+    public static String[] getPidFileNameListWithoutExtn(String host, String url, String hostname, String hostPass) {
+        String command = "find " + url + " -name '*.pid' -printf '%P\\n'";
+
+        return runCommandOverSSH(host, hostname, hostPass, command);
+    }
+
+    public static String[] runCommandOverSSH(String host, String hostname, String hostPass, String command) {
+        SSHConnectionManager ssh = new SSHConnectionManager(host, hostname, hostPass);
+        String[] ary = null;
+        try {
+            ssh.open();
+            String ret = ssh.runCommand(command);
+
+            System.out.println(ret);
+            ary = ret.split("\n");
+            ssh.close();
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return ary;
+    }
+
     public void open() throws JSchException {
-        open(this.hostname, this.username, this.password);
+        open(hostname, username, password);
     }
 
     public void open(String hostname, String username, String password) throws JSchException {
 
         JSch jSch = new JSch();
 
-        this.session = jSch.getSession(username, hostname, 22);
+        session = jSch.getSession(username, hostname, 22);
         Properties config = new Properties();
         config.put("StrictHostKeyChecking", "no");  // not recommended
-        this.session.setConfig(config);
-        this.session.setPassword(password);
+        session.setConfig(config);
+        session.setPassword(password);
 
         System.out.println("Connecting SSH to " + hostname + " - Please wait for few seconds... ");
-        this.session.connect();
+        session.connect();
         System.out.println("Connected!");
     }
 
@@ -47,12 +95,12 @@ public class SSHConnectionManager {
 
         String ret = "";
 
-        if (!this.session.isConnected()) {
+        if (!session.isConnected()) {
             throw new RuntimeException("Not connected to an open session.  Call open() first!");
         }
 
         ChannelExec channel = null;
-        channel = (ChannelExec) this.session.openChannel("exec");
+        channel = (ChannelExec) session.openChannel("exec");
 
         channel.setCommand(command);
         channel.setInputStream(null);
@@ -75,7 +123,6 @@ public class SSHConnectionManager {
 
         return ret;
     }
-
 
     private String getChannelOutput(Channel channel, InputStream in) throws IOException {
 
@@ -110,31 +157,7 @@ public class SSHConnectionManager {
     }
 
     public void close() {
-        this.session.disconnect();
+        session.disconnect();
         System.out.println("Disconnected channel and session");
-    }
-
-
-    public static void main(String[] args) {
-
-        SSHConnectionManager ssh = new SSHConnectionManager();
-        try {
-            ssh.open();
-            String ret = ssh.runCommand("ls /home/pbarega/spring-boot-admin/data-fabric-jars");
-
-            System.out.println(ret);
-            String[] ary = ret.split("\n");
-            System.out.println(ary);
-            ssh.close();
-
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-    }
-
-    public static String[] getAppsOverSSH(String host, String url) {
-
-        return null;
     }
 }
