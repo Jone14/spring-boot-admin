@@ -31,6 +31,7 @@ public class ApplicationManagement {
     @Autowired
     AppManagementUtil util;
     private String hostName = "";
+    private String appDataFileConstant = "registered-apps.txt";
 
     @Autowired
     public ApplicationManagement(String javaLocation, String appLocation, String appConfigLocation, String pidLocation, String hostUsername, String hostPassword) {
@@ -71,12 +72,16 @@ public class ApplicationManagement {
                     //byte[] strToBytes = (appfile+"|"+hostName).get();
                     String host = ((hostName).split("\\/|:"))[3];
                     appManagementBean.setHostUrl(host);
-                    java.nio.file.Files.write(Paths.get("registered-apps.txt"), (appfile + "|" + host + System.lineSeparator()).getBytes(), StandardOpenOption.APPEND);
+                    String appData = appfile + "|" + host;
+                    List<String> registeredAppList = java.nio.file.Files.readAllLines(Paths.get(appDataFileConstant), StandardCharsets.UTF_8);
+                    if (!registeredAppList.contains(appData)) {
+                        java.nio.file.Files.write(Paths.get(appDataFileConstant), (appData + System.lineSeparator()).getBytes(), StandardOpenOption.APPEND);
+                    }
                 } else {
                     //appManagementBean.setHostUrl("NA");
                     //get the host details from DB/Memory
                     List<String> registeredAppList = null;
-                    registeredAppList = java.nio.file.Files.readAllLines(Paths.get("registered-apps.txt"), StandardCharsets.UTF_8);
+                    registeredAppList = java.nio.file.Files.readAllLines(Paths.get(appDataFileConstant), StandardCharsets.UTF_8);
                     ArrayList hostUrlList = new ArrayList();
                     for (String registeredApp : registeredAppList) {
                         String[] data = registeredApp.split("\\|");

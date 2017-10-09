@@ -29,6 +29,8 @@ public class AppManagementUtil {
     @Autowired
     ApplicationRegistry applicationRegistry;
 
+    private String appDataFileConstant = "registered-apps.txt";
+
     public String getStatusOfPid(String pid) {
         OsCheck.OSType ostype = OsCheck.getOperatingSystemType();
         String output = "";
@@ -60,16 +62,14 @@ public class AppManagementUtil {
         String fileName = null;
 
         try {
-            registeredAppList = Files.readLines(new File("registered-apps.txt"), StandardCharsets.UTF_8);
+            registeredAppList = Files.readLines(new File(appDataFileConstant), StandardCharsets.UTF_8);
             if (registeredAppList.size() < 1) {
                 Collection<Application> registeredApplications = applicationRegistry.getApplications();
-
                 for (Application registeredApplication : registeredApplications) {
-                    java.nio.file.Files.write(Paths.get("registered-apps.txt"), (registeredApplication.getName() + "|" + ((registeredApplication.getManagementUrl()).split("\\/|:"))[3] + System.lineSeparator()).getBytes(), StandardOpenOption.APPEND);
+                    java.nio.file.Files.write(Paths.get(appDataFileConstant), (registeredApplication.getName() + "|" + ((registeredApplication.getManagementUrl()).split("\\/|:"))[3] + System.lineSeparator()).getBytes(), StandardOpenOption.APPEND);
                 }
 
-
-                registeredAppList = Files.readLines(new File("registered-apps.txt"), StandardCharsets.UTF_8);
+                registeredAppList = Files.readLines(new File(appDataFileConstant), StandardCharsets.UTF_8);
             }
 
 
